@@ -4,10 +4,6 @@ class CardGame
   HAND_NUM = 7
   WIN_POINT = 3
 
-  # 
-  # 初期化
-  # 
-  # @return [nil]
   def initialize
     # カードの束を生成
     @card_pile = []
