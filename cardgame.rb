@@ -17,18 +17,19 @@ class CardGame
     @card_pile.sort_by!{rand}
 
     # 手札を配る（無駄にちゃんと上から1枚ずつ配る）
-    @hand = {player1: [], player2: []}
+    hand_p1 = []
+    hand_p2 = []
     HAND_NUM.times do
-      @hand[:player1] << @card_pile.shift
-      @hand[:player2] << @card_pile.shift
+      hand_p1 << @card_pile.shift
+      hand_p2 << @card_pile.shift
     end
     # 理牌
-    @hand[:player1].sort!
-    @hand[:player2].sort!
+    hand_p1.sort!
+    hand_p2.sort!
 
     # プレイヤー生成
-    @player1 = Player.new(:player1, @hand[:player1])
-    @player2 = Player.new(:player2, @hand[:player2])
+    @player1 = Player.new(:player1, hand_p1)
+    @player2 = Player.new(:player2, hand_p2)
     @turn_player = @player1
 
     # 捨て札置き場とポイントの初期化
@@ -36,7 +37,7 @@ class CardGame
     @point = {player1: 0, player2: 0}
   end
 
-  attr_reader :card_pile, :hand, :discard_pile, :point, :turn_player
+  attr_reader :card_pile, :discard_pile, :point, :turn_player
   attr_accessor :player1, :player2
 
   def main
@@ -49,7 +50,7 @@ class CardGame
       end
       self.put_result
       self.switch_player(@turn_player)
-    end until @hand[:player1].empty? and @hand[:player2].empty?
+    end until @player1.hand_num + @player2.hand_num == 0
 
     # 終了処理
     return self.game_end
@@ -187,6 +188,10 @@ class Player
     when :player1 then :player2
     when :player2 then :player1
     end
+  end
+
+  def hand_num
+    return @hand.count
   end
 end
 
